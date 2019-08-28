@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <link href="../../css/temp4.css" rel="stylesheet">
+    <script src="../../script/axios.min.js"></script>
+</head>
+<body>
+<div id="root">
+    <div class="portal--v0wF3">
+        <div class="banner--3Pme6"><h1 class="title--3xFJU">充值优惠活动</h1>
+            <small class="limit--3vRZy">限充3次</small>
+        </div>
+        <div class="detail--X1WNA">
+            <div class="amount--2wf_C" id="money"></div>
+            <div class="exchange--2LizI">
+                <div class="total--3XnhS" id="number"></div>
+                <div class="note--1efc4"><span id="total"></span><em id="given"></em></div>
+            </div>
+        </div>
+        <div class="action--1mLJ8"><h3 class="title--3xFJU">活动时间</h3>
+            <div class="countdown--3kvWb" id="time">距离活动截止还有: </div>
+            <a class="recharge--2JKxx" id="jump">立即支付<span id="pay"></span></a>
+        </div>
+        <ul class="rules--2tB0a" id="explain"></ul>
+    </div>
+</div>
+<script type="text/javascript">
+    //  倒计时
+    leftTimer = function(endTime) {
+        var Today = new Date();
+        if(new Date( endTime ).getTime() - Today.getTime() <= 0){
+            document.getElementById('time').innerText='距离活动截止还有: 活动已结束';
+            clearTimeout(timer);
+            return;
+        }
+        var endYear = endTime.substr(0,4);
+        var endMonth = endTime.substr(5,2);
+        var endDate = endTime.substr(8,2);
+        var NowYear = Today.getFullYear();
+        var NowMonth = Today.getMonth();
+        var NowDate = Today.getDate();
+        var NowHour = Today.getHours();
+        var NowMinute = Today.getMinutes();
+        var NowSecond = Today.getSeconds();
+        if (NowYear <2000) NowYear=1900+NowYear;
+        var Hourleft = endTime.substr(11,2) - NowHour;
+        var Minuteleft = endTime.substr(14,2) - NowMinute;
+        var Secondleft = endTime.substr(17,2) - NowSecond;
+        var Yearleft = endYear - NowYear;
+        var Monthleft = endMonth - NowMonth - 1;
+        var Dateleft = endDate - NowDate;
+
+        if (Secondleft<0)
+        {
+            Secondleft=60+Secondleft;
+            Minuteleft=Minuteleft-1;
+        }
+        if (Minuteleft<0)
+        {
+            Minuteleft=60+Minuteleft;
+            Hourleft=Hourleft-1;
+        }
+        if (Hourleft<0)
+        {
+            Hourleft=24+Hourleft;
+            Dateleft=Dateleft-1;
+        }
+        if (Dateleft<0)
+        {
+            Dateleft=31+Dateleft;
+            Monthleft=Monthleft-1;
+        }
+        if (Monthleft<0)
+        {
+            Monthleft=12+Monthleft;
+            Yearleft=Yearleft-1;
+        }
+        if(Yearleft == 0 && Monthleft > 0){
+            document.getElementById('time').innerText= "距离活动截止还有: " + Monthleft + '月' + Dateleft+'天'+Hourleft+'小时' + Minuteleft+ '分' + Secondleft + '秒';
+        }else if(Yearleft == 0 && Monthleft == 0 && Dateleft > 0){
+            document.getElementById('time').innerText="距离活动截止还有: " + Dateleft+'天'+Hourleft+'小时' + Minuteleft+ '分' + Secondleft + '秒';
+        } else if (Yearleft == 0 && Monthleft == 0 && Dateleft == 0 && Hourleft > 0) {
+            document.getElementById('time').innerText="距离活动截止还有: 0天" + Hourleft+'小时' + Minuteleft+ '分' + Secondleft + '秒';
+        } else if(Yearleft == 0 && Monthleft == 0 && Dateleft == 0 && Hourleft == 0  && Minuteleft > 0){
+            document.getElementById('time').innerText="距离活动截止还有: 0天0小时" + Minuteleft+ '分' + Secondleft + '秒'
+        } else{
+            document.getElementById('time').innerText="距离活动截止还有: " + Yearleft + '年' + Monthleft + '月' + Dateleft+'天'+Hourleft+'小时' + Minuteleft+ '分' + Secondleft + '秒';
+        }
+        var timer = setTimeout(function () {
+            leftTimer(endTime);
+        },1000);
+    };
+    window.onload = function () {
+        axios.get('../../config.json')
+            .then(function (response) {
+                leftTimer(response.data.temp4[4].time);
+                document.getElementsByTagName("title")[0].innerText = response.data.temp4[4].title;
+                document.getElementById('money').innerText=response.data.temp4[4].money;
+                document.getElementById('pay').innerText=response.data.temp4[4].money;
+                document.getElementById('number').innerText=response.data.temp4[4].number;
+                document.getElementById('total').innerText=response.data.temp4[4].total;
+                document.getElementById('given').innerText=response.data.temp4[4].given;
+                document.getElementById('jump').setAttribute('href',response.data.temp4[4].href);
+                response.data.temp4[4].explain.forEach(function (item,index) {
+                    var node = document.createElement('li');
+                    node.innerText = item;
+                    document.getElementById('explain').appendChild(node)
+                })
+            })
+            .catch(function (error) {
+                // console.log(error);
+            });
+    }
+</script>
+</body>
+</html>

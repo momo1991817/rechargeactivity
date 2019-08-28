@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <link href="../../css/temp2.css" rel="stylesheet">
+    <script src="../../script/axios.min.js"></script>
+</head>
+<body>
+<div id="root">
+    <div class="portal--3LHsw">
+        <div class="inner--3DBo5">
+            <div class="header--YQln8"></div>
+            <div class="title1--1kdKx" id="money"></div>
+            <div class="title2--1PMVY" id="number"></div>
+            <a id="jump" class="slogan--347VZ"></a>
+            <div class="timer--2OyA4 timer--YhPLr" id="time"></div>
+            <div class="rules--1RCMI" id="explain">
+            </div>
+        </div>
+        <div class="footer--2mKHF"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    window.onload = function () {
+        axios.get('../../config.json')
+            .then(function (response) {
+                document.getElementsByTagName("title")[0].innerText = response.data.temp2[7].title;
+                document.getElementById('money').innerText=response.data.temp2[7].money;
+                document.getElementById('number').innerText=response.data.temp2[7].number;
+                document.getElementById('time').innerText=response.data.temp2[7].time;
+                document.getElementById('jump').setAttribute('href',response.data.temp2[7].href);
+                response.data.temp2[7].explain.forEach(function (item,index) {
+                    var node = document.createElement('div');
+                    node.innerText = item;
+                    document.getElementById('explain').appendChild(node)
+                })
+            })
+            .catch(function (error) {
+                // console.log(error);
+            });
+    }
+</script>
+</body>
+</html>
